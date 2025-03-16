@@ -1,7 +1,6 @@
 import asyncio
 import sys
 from pathlib import Path
-from typing import List
 
 from downloaders import DownloaderFactory
 from entities import Downloadable
@@ -26,7 +25,7 @@ async def main():
         sys.exit(1)
 
     input_file = Path(sys.argv[1])
-    
+
     # Use specified output directory or default
     output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else default_output_dir
 
