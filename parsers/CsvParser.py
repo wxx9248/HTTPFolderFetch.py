@@ -10,7 +10,7 @@ class CsvParser(Parser):
     async def parse(self, file_path: Union[str, Path]) -> List[Downloadable]:
         downloadables = []
         path = file_path if isinstance(file_path, Path) else Path(file_path)
-        
+
         # Use standard library to read CSV file
         with path.open("r", newline="") as csv_file:
             csv_reader = csv.reader(csv_file)

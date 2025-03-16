@@ -1,12 +1,14 @@
 from typing import Dict, Type
 
-from strategies.NginxShareStrategy import NginxShareStrategy
+from strategies.GbpStrategy import GbpStrategy
+from strategies.NginxJsonStrategy import NginxJsonStrategy
 from strategies.Strategy import Strategy
 
 
 class StrategyFactory:
     _strategies: Dict[str, Type[Strategy]] = {
-        "nginx_share": NginxShareStrategy,
+        "nginx_json": NginxJsonStrategy,
+        "gbp": GbpStrategy,
     }
 
     @classmethod

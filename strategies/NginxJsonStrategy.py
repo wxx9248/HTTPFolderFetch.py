@@ -4,7 +4,7 @@ from entities import Folder
 from strategies.Strategy import Strategy
 
 
-class NginxShareStrategy(Strategy):
+class NginxJsonStrategy(Strategy):
     def __init__(self):
         self.crawler = NginxJsonCrawler()
         self.accessor = PlainAccessor()
