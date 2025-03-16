@@ -71,9 +71,9 @@ class GbpHttpCrawler(Crawler):
             href = link.get("href")
             name = link.text
 
-            # Check if it"s a folder or file
+            # Check if it's a folder or file
             if name.endswith("/"):
-                # It"s a folder - remove the trailing slash for the name
+                # It's a folder - remove the trailing slash for the name
                 folder_name = name[:-1]
                 folder_url = urljoin(base_url, href)
 
@@ -81,7 +81,7 @@ class GbpHttpCrawler(Crawler):
                 subfolder = await self.crawl(folder_url, self.accessor)
                 folders.append(subfolder)
             else:
-                # It"s a file
+                # It's a file
                 file_url = urljoin(base_url, href)
 
                 # Get size if available (third cell)
