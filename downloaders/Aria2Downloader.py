@@ -17,7 +17,7 @@ class Aria2Downloader(Downloader):
 
         file_path = output_path / self.list_filename
 
-        async with aiofiles.open(file_path, "w") as f:
+        async with aiofiles.open(file_path, "a") as f:
             await self._write_entries(f, root, output_path)
 
     async def _write_entries(self, f, folder: Folder, base_path: Path) -> None:
