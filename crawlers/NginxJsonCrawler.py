@@ -1,4 +1,4 @@
-from urllib.parse import urljoin
+from urllib.parse import urljoin, unquote
 
 from accessors.Accessor import Accessor
 from crawlers.Crawler import Crawler
@@ -43,12 +43,12 @@ class NginxJsonCrawler(Crawler):
             elif entry["type"] == "file":
                 file_url = urljoin(base_url, entry["name"])
                 files.append(File(
-                    name=entry["name"],
+                    name=unquote(entry["name"]),
                     url=file_url
                 ))
 
         return Folder(
-            name=base_url.rstrip("/").split("/")[-1],
+            name=unquote(base_url.rstrip("/").split("/")[-1]),
             folders=folders,
             files=files
         )

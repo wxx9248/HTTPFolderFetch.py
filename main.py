@@ -18,7 +18,7 @@ async def process_downloadable(downloadable: Downloadable, output_path: Path) ->
 
 async def main():
     # Default output directory
-    default_output_dir = Path.cwd() / "Downloaded"
+    default_output_dir = Path("Downloaded")
 
     if len(sys.argv) < 2:
         print("Usage: python main.py <input_file> [output_directory]")
@@ -31,7 +31,7 @@ async def main():
     output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else default_output_dir
 
     parser = ParserFactory.create(input_file)
-    downloadables: List[Downloadable] = await parser.parse(input_file)
+    downloadables = await parser.parse(input_file)
 
     tasks = [process_downloadable(d, output_dir) for d in downloadables]
     await asyncio.gather(*tasks)
