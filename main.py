@@ -4,16 +4,16 @@ import sys
 from pathlib import Path
 
 from downloaders import DownloaderFactory
-from entities import Downloadable
+from entities import Crawlable
 from parsers import ParserFactory
 from strategies import StrategyFactory
 
 
-async def process_downloadable(downloadable: Downloadable, output_path: Path) -> None:
-    strategy = StrategyFactory.create(downloadable.strategy)
-    root = await strategy.execute(str(downloadable.url))
+async def process_crawlable(crawlable: Crawlable, output_path: Path) -> None:
+    strategy = StrategyFactory.create(crawlable.strategy)
+    folder = await strategy.execute(crawlable.url)
     downloader = DownloaderFactory.create()
-    await downloader.download(output_path, root)
+    await downloader.download(output_path, folder)
 
 
 async def main():
@@ -33,9 +33,9 @@ async def main():
     output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else default_output_dir
 
     parser = ParserFactory.create(input_file)
-    downloadables = await parser.parse(input_file)
+    crawlables = await parser.parse(input_file)
 
-    await asyncio.gather(*[process_downloadable(d, output_dir) for d in downloadables])
+    await asyncio.gather(*[process_crawlable(c, output_dir) for c in crawlables])
 
 
 if __name__ == "__main__":

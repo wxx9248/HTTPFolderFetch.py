@@ -2,13 +2,15 @@ import csv
 from pathlib import Path
 from typing import List, Union
 
-from entities import Downloadable
+from pydantic import HttpUrl
+
+from entities import Crawlable
 from parsers.Parser import Parser
 
 
 class CsvParser(Parser):
-    async def parse(self, file_path: Union[str, Path]) -> List[Downloadable]:
-        downloadables = []
+    async def parse(self, file_path: Union[str, Path]) -> List[Crawlable]:
+        crawlables = []
         path = file_path if isinstance(file_path, Path) else Path(file_path)
 
         # Use standard library to read CSV file
@@ -28,17 +30,17 @@ class CsvParser(Parser):
             # If first row is not a header, process it
             if not is_header and first_row:
                 if len(first_row) >= 2:
-                    downloadables.append(Downloadable(
-                        url=first_row[0],
+                    crawlables.append(Crawlable(
+                        url=HttpUrl(first_row[0]),
                         strategy=first_row[1]
                     ))
 
             # Process remaining rows
             for row in csv_reader:
                 if len(row) >= 2:
-                    downloadables.append(Downloadable(
-                        url=row[0],
+                    crawlables.append(Crawlable(
+                        url=HttpUrl(row[0]),
                         strategy=row[1]
                     ))
 
-        return downloadables
+        return crawlables

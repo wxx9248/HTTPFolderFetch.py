@@ -1,6 +1,6 @@
 from pydantic import BaseModel, HttpUrl
 
 
-class Downloadable(BaseModel):
+class Crawlable(BaseModel):
     url: HttpUrl
     strategy: str
