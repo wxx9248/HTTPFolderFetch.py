@@ -13,8 +13,6 @@ class GbpHttpCrawler(Crawler):
         self.accessor = None
 
     async def crawl(self, url: str, accessor: Accessor) -> Folder:
-        # print(f"Crawling {url}")
-
         # Store accessor for recursive calls
         self.accessor = accessor
 
@@ -79,24 +77,10 @@ class GbpHttpCrawler(Crawler):
                 folder_url = urljoin(base_url, href)
 
                 # Recursively crawl the subfolder
-
                 pending_folder_urls.append(folder_url)
-
-                # subfolder = await self.crawl(folder_url, self.accessor)
-                # folders.append(subfolder)
             else:
                 # It's a file
                 file_url = urljoin(base_url, href)
-
-                # Get size if available (third cell)
-                size = None
-                if len(cells) > 2:
-                    size_cell = cells[2]
-                    # Check if it has a value attribute for raw size
-                    size_value = size_cell.get("value")
-                    if size_value:
-                        size = int(size_value)
-
                 files.append(File(name=unquote(name), url=file_url))
 
         folders = await asyncio.gather(

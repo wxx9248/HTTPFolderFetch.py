@@ -34,7 +34,6 @@ class NginxJsonCrawler(Crawler):
 
     async def _process_directory(self, base_url: str, entries: list) -> Folder:
         files = []
-
         pending_folder_urls = []
 
         for entry in entries:

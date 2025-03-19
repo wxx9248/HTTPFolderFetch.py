@@ -38,12 +38,8 @@ async def main():
     parser = ParserFactory.create(input_file)
     downloadables = await parser.parse(input_file)
 
-    print(f"Downloadables: {downloadables}")
-
     await asyncio.gather(*[process_downloadable(d, output_dir) for d in downloadables])
 
 
 if __name__ == "__main__":
-
     uvloop.run(main())
-    # asyncio.run(main())
