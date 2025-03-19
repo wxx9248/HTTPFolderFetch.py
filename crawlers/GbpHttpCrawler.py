@@ -13,6 +13,8 @@ class GbpHttpCrawler(Crawler):
         self.accessor = None
 
     async def crawl(self, url: str, accessor: Accessor) -> Folder:
+        print(f"Crawling {url}")
+
         # Store accessor for recursive calls
         self.accessor = accessor
 
