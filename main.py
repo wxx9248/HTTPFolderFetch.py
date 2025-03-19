@@ -26,9 +26,9 @@ async def main():
         description="A simple web folder crawler"
     )
     parser.add_argument("--output-dir", default=default_output_dir,
-                        help=f"set output directory. If output_directory is not specified, '{default_output_dir}' will be used.")
+                        help=f"set output directory. If not specified, '{default_output_dir}' will be used.")
     parser.add_argument("input",
-                        help="a file containing URLs to crawl and their corresponding strategies. Supports CSV and JSON.")
+                        help="path to a file containing URLs to crawl and their corresponding crawling strategies. Supports CSV and JSON.")
     arguments = parser.parse_args()
 
     input_file = Path(arguments.input)
