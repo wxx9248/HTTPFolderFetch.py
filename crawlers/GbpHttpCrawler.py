@@ -1,3 +1,4 @@
+import asyncio
 from urllib.parse import urljoin, unquote
 
 from bs4 import BeautifulSoup
@@ -6,7 +7,6 @@ from pydantic import HttpUrl
 from accessors.Accessor import Accessor
 from crawlers.Crawler import Crawler
 from entities import Folder, File
-import asyncio
 
 
 class GbpHttpCrawler(Crawler):
@@ -37,7 +37,6 @@ class GbpHttpCrawler(Crawler):
             # Parse the table and return the folder structure
             return await self._process_current_folder(url, table)
 
-
     async def _process_current_folder(self, url: HttpUrl, table) -> Folder:
         files = []
         pending_folder_urls = []
@@ -52,7 +51,7 @@ class GbpHttpCrawler(Crawler):
         rows = table.find_all("tr")
 
         # Skip the header row and the parent directory row (..)
-        for row in rows[2:]:    # Skip header row and parent directory
+        for row in rows[2:]:  # Skip header row and parent directory
             cells = row.find_all("td")
             if not cells:
                 continue

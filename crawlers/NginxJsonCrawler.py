@@ -1,3 +1,4 @@
+import asyncio
 from urllib.parse import urljoin, unquote
 
 from pydantic import HttpUrl
@@ -5,7 +6,6 @@ from pydantic import HttpUrl
 from accessors.Accessor import Accessor
 from crawlers.Crawler import Crawler
 from entities import Folder, File
-import asyncio
 
 
 class NginxJsonCrawler(Crawler):

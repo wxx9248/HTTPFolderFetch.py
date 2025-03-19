@@ -1,7 +1,8 @@
-import uvloop
 import asyncio
 import sys
 from pathlib import Path
+
+import uvloop
 
 from downloaders import DownloaderFactory
 from entities import Crawlable
