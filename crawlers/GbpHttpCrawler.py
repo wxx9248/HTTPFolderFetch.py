@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from accessors.Accessor import Accessor
 from crawlers.Crawler import Crawler
 from entities import Folder, File
+import asyncio
 
 
 class GbpHttpCrawler(Crawler):
@@ -12,7 +13,7 @@ class GbpHttpCrawler(Crawler):
         self.accessor = None
 
     async def crawl(self, url: str, accessor: Accessor) -> Folder:
-        print(f"Crawling {url}")
+        # print(f"Crawling {url}")
 
         # Store accessor for recursive calls
         self.accessor = accessor
@@ -49,8 +50,8 @@ class GbpHttpCrawler(Crawler):
             raise Exception(f"Error crawling {url}: {str(e)}")
 
     async def _parse_table(self, base_url: str, table, folder_name: str) -> Folder:
-        folders = []
         files = []
+        pending_folder_urls = []
 
         # Find all rows in the table body
         rows = table.find_all("tr")
@@ -78,8 +79,11 @@ class GbpHttpCrawler(Crawler):
                 folder_url = urljoin(base_url, href)
 
                 # Recursively crawl the subfolder
-                subfolder = await self.crawl(folder_url, self.accessor)
-                folders.append(subfolder)
+
+                pending_folder_urls.append(folder_url)
+
+                # subfolder = await self.crawl(folder_url, self.accessor)
+                # folders.append(subfolder)
             else:
                 # It's a file
                 file_url = urljoin(base_url, href)
@@ -93,13 +97,13 @@ class GbpHttpCrawler(Crawler):
                     if size_value:
                         size = int(size_value)
 
-                files.append(File(
-                    name=unquote(name),
-                    url=file_url
-                ))
+                files.append(File(name=unquote(name), url=file_url))
 
-        return Folder(
-            name=unquote(folder_name),
-            folders=folders,
-            files=files
+        folders = await asyncio.gather(
+            *[
+                self.crawl(folder_url, self.accessor)
+                for folder_url in pending_folder_urls
+            ]
         )
+
+        return Folder(name=unquote(folder_name), folders=folders, files=files)

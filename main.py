@@ -12,6 +12,9 @@ from strategies import StrategyFactory
 async def process_downloadable(downloadable: Downloadable, output_path: Path) -> None:
     strategy = StrategyFactory.create(downloadable.strategy)
     root = await strategy.execute(str(downloadable.url))
+
+    print(f"Root: {root}")
+
     downloader = DownloaderFactory.create()
     await downloader.download(output_path, root)
 
@@ -22,7 +25,9 @@ async def main():
 
     if len(sys.argv) < 2:
         print("Usage: python main.py <input_file> [output_directory]")
-        print(f"If output_directory is not specified, '{default_output_dir}' will be used")
+        print(
+            f"If output_directory is not specified, '{default_output_dir}' will be used"
+        )
         sys.exit(1)
 
     input_file = Path(sys.argv[1])
@@ -33,9 +38,12 @@ async def main():
     parser = ParserFactory.create(input_file)
     downloadables = await parser.parse(input_file)
 
-    tasks = [process_downloadable(d, output_dir) for d in downloadables]
-    await asyncio.gather(*tasks)
+    print(f"Downloadables: {downloadables}")
+
+    await asyncio.gather(*[process_downloadable(d, output_dir) for d in downloadables])
 
 
 if __name__ == "__main__":
+
     uvloop.run(main())
+    # asyncio.run(main())
