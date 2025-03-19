@@ -1,5 +1,5 @@
+import argparse
 import asyncio
-import sys
 from pathlib import Path
 
 import uvloop
@@ -21,17 +21,20 @@ async def main():
     # Default output directory
     default_output_dir = Path("Downloaded")
 
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <input_file> [output_directory]")
-        print(
-            f"If output_directory is not specified, '{default_output_dir}' will be used"
-        )
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        prog="HTTPFolderFetch",
+        description="A simple web folder crawler"
+    )
+    parser.add_argument("--output-dir", default=default_output_dir,
+                        help=f"set output directory. If output_directory is not specified, '{default_output_dir}' will be used.")
+    parser.add_argument("input",
+                        help="a file containing URLs to crawl and their corresponding strategies. Supports CSV and JSON.")
+    arguments = parser.parse_args()
 
-    input_file = Path(sys.argv[1])
+    input_file = Path(arguments.input)
 
     # Use specified output directory or default
-    output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else default_output_dir
+    output_dir = Path(arguments.output_dir) if arguments.output_dir else default_output_dir
 
     parser = ParserFactory.create(input_file)
     crawlables = await parser.parse(input_file)
