@@ -12,9 +12,6 @@ from strategies import StrategyFactory
 async def process_downloadable(downloadable: Downloadable, output_path: Path) -> None:
     strategy = StrategyFactory.create(downloadable.strategy)
     root = await strategy.execute(str(downloadable.url))
-
-    print(f"Root: {root}")
-
     downloader = DownloaderFactory.create()
     await downloader.download(output_path, root)
 
