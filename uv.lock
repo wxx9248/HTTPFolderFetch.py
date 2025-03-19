@@ -121,8 +121,8 @@ wheels = [
 ]
 
 [[package]]
-name = "httpfolderfetch-py"
-version = "0.1.0"
+name = "httpfolderfetch"
+version = "1.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "aiofiles" },

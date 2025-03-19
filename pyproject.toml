@@ -1,8 +1,6 @@
 [project]
-name = "httpfolderfetch-py"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+name = "httpfolderfetch"
+version = "1.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "aiofiles>=24.1.0",
