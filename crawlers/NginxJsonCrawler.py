@@ -1,47 +1,49 @@
+import asyncio
 from urllib.parse import urljoin, unquote
+
+from pydantic import HttpUrl
 
 from accessors.Accessor import Accessor
 from crawlers.Crawler import Crawler
 from entities import Folder, File
-import asyncio
 
 
 class NginxJsonCrawler(Crawler):
     def __init__(self):
         self.accessor = None
 
-    async def crawl(self, url: str, accessor: Accessor) -> Folder:
+    async def crawl(self, url: HttpUrl, accessor: Accessor) -> Folder:
         print(f"Crawling {url}")
 
         # Store accessor for recursive calls
         self.accessor = accessor
 
         # Ensure URL ends with a slash
-        if not url.endswith("/"):
-            url += "/"
+        if not url.path.endswith("/"):
+            url = HttpUrl(str(url) + "/")
 
         # Try to fetch index.json
-        index_url = urljoin(url, "index.json")
-        try:
-            async with accessor.get(index_url) as response:
-                if response.status != 200:
-                    raise Exception(f"Failed to fetch {index_url}: {response.status}")
+        index_url = urljoin(str(url), "index.json")
+        async with accessor.get(index_url) as response:
+            if response.status != 200:
+                raise Exception(f"Failed to fetch {index_url}: {response.status}")
 
-                data = await response.json()
-                return await self._process_directory(url, data)
-        except Exception as e:
-            raise Exception(f"Error crawling {url}: {str(e)}")
+            entries = await response.json()
+            return await self._process_current_folder(url, entries)
 
-    async def _process_directory(self, base_url: str, entries: list) -> Folder:
+    async def _process_current_folder(self, url: HttpUrl, entries: list) -> Folder:
         files = []
         pending_folder_urls = []
 
+        # Extract folder name from URL
+        folder_name = unquote(url.path.rstrip("/").split("/")[-1])
+
         for entry in entries:
             if entry["type"] == "directory":
-                folder_url = urljoin(base_url, entry["name"])
+                folder_url = HttpUrl(urljoin(str(url), entry["name"]))
                 pending_folder_urls.append(folder_url)
             elif entry["type"] == "file":
-                file_url = urljoin(base_url, entry["name"])
+                file_url = HttpUrl(urljoin(str(url), entry["name"]))
                 files.append(File(name=unquote(entry["name"]), url=file_url))
 
         folders = await asyncio.gather(
@@ -52,7 +54,7 @@ class NginxJsonCrawler(Crawler):
         )
 
         return Folder(
-            name=unquote(base_url.rstrip("/").split("/")[-1]),
+            name=folder_name,
             folders=folders,
             files=files,
         )
