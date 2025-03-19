@@ -3,6 +3,7 @@ from urllib.parse import urljoin, unquote
 from accessors.Accessor import Accessor
 from crawlers.Crawler import Crawler
 from entities import Folder, File
+import asyncio
 
 
 class NginxJsonCrawler(Crawler):
@@ -32,23 +33,26 @@ class NginxJsonCrawler(Crawler):
             raise Exception(f"Error crawling {url}: {str(e)}")
 
     async def _process_directory(self, base_url: str, entries: list) -> Folder:
-        folders = []
         files = []
+        pending_folder_urls = []
 
         for entry in entries:
             if entry["type"] == "directory":
                 folder_url = urljoin(base_url, entry["name"])
-                folder = await self.crawl(folder_url, self.accessor)
-                folders.append(folder)
+                pending_folder_urls.append(folder_url)
             elif entry["type"] == "file":
                 file_url = urljoin(base_url, entry["name"])
-                files.append(File(
-                    name=unquote(entry["name"]),
-                    url=file_url
-                ))
+                files.append(File(name=unquote(entry["name"]), url=file_url))
+
+        folders = await asyncio.gather(
+            *[
+                self.crawl(folder_url, self.accessor)
+                for folder_url in pending_folder_urls
+            ]
+        )
 
         return Folder(
             name=unquote(base_url.rstrip("/").split("/")[-1]),
             folders=folders,
-            files=files
+            files=files,
         )
