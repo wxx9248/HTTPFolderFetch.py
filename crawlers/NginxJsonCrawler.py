@@ -1,5 +1,5 @@
 import asyncio
-from urllib.parse import urljoin, unquote
+from urllib.parse import urljoin, quote, unquote
 
 from pydantic import HttpUrl
 
@@ -40,18 +40,16 @@ class NginxJsonCrawler(Crawler):
 
         for entry in entries:
             if entry["type"] == "directory":
-                folder_url = HttpUrl(urljoin(str(url), entry["name"]))
+                folder_url = HttpUrl(urljoin(str(url), quote(entry["name"])))
                 pending_folder_urls.append(folder_url)
             elif entry["type"] == "file":
-                file_url = HttpUrl(urljoin(str(url), entry["name"]))
-                files.append(File(name=unquote(entry["name"]), url=file_url))
+                file_url = HttpUrl(urljoin(str(url), quote(entry["name"])))
+                files.append(File(name=entry["name"], url=file_url))
 
-        folders = await asyncio.gather(
-            *[
-                self.crawl(folder_url, self.accessor)
-                for folder_url in pending_folder_urls
-            ]
-        )
+        folders = await asyncio.gather(*[
+            self.crawl(folder_url, self.accessor)
+            for folder_url in pending_folder_urls
+        ])
 
         return Folder(
             name=folder_name,

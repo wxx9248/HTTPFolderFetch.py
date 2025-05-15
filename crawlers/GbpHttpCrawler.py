@@ -78,11 +78,9 @@ class GbpHttpCrawler(Crawler):
                 file_url = HttpUrl(urljoin(str(url), href))
                 files.append(File(name=unquote(name), url=file_url))
 
-        folders = await asyncio.gather(
-            *[
-                self.crawl(folder_url, self.accessor)
-                for folder_url in pending_folder_urls
-            ]
-        )
+        folders = await asyncio.gather(*[
+            self.crawl(folder_url, self.accessor)
+            for folder_url in pending_folder_urls
+        ])
 
         return Folder(name=folder_name, folders=folders, files=files)
