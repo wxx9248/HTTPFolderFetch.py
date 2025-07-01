@@ -17,6 +17,6 @@ dependencies = [
     "propcache>=0.3.0",
     "pydantic>=2.10.6",
     "typing-extensions>=4.12.2",
-    "uvloop>=0.21.0",
+    "uvloop>=0.21.0; sys_platform != 'win32'",
     "yarl>=1.18.3",
 ]

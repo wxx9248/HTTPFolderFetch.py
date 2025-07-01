@@ -2,7 +2,12 @@ import argparse
 import asyncio
 from pathlib import Path
 
-import uvloop
+# Conditionally import uvloop if available
+try:
+    import uvloop
+    UVLOOP_AVAILABLE = True
+except ImportError:
+    UVLOOP_AVAILABLE = False
 
 from downloaders import DownloaderFactory
 from entities import Crawlable
@@ -43,4 +48,9 @@ async def main():
 
 
 if __name__ == "__main__":
-    uvloop.run(main())
+    if UVLOOP_AVAILABLE:
+        # Use uvloop for better performance on *nix systems
+        uvloop.run(main())
+    else:
+        # Fall back to standard asyncio on Windows or when uvloop is not available
+        asyncio.run(main())
