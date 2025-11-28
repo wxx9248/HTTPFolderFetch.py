@@ -1,6 +1,7 @@
 from typing import Dict, Type
 
 from strategies.GbpStrategy import GbpStrategy
+from strategies.KhinsiderStrategy import KhinsiderStrategy
 from strategies.NginxJsonStrategy import NginxJsonStrategy
 from strategies.Strategy import Strategy
 
@@ -9,6 +10,7 @@ class StrategyFactory:
     _strategies: Dict[str, Type[Strategy]] = {
         "nginx_json": NginxJsonStrategy,
         "gbp": GbpStrategy,
+        "khinsider": KhinsiderStrategy
     }
 
     @classmethod
