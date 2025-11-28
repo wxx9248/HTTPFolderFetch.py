@@ -24,10 +24,9 @@ class Aria2Downloader(Downloader):
         current_path = base_path / folder.name
 
         for file in folder.files:
-            relative_path = Path(folder.name) / file.name
-            await f.write(f"{file.url}\n")
-            await f.write(f"  dir={current_path}\n")
-            await f.write(f"  out={file.name}\n\n")
+            # Write all lines for one entry atomically to prevent interleaving
+            entry = f"{file.url}\n  dir={current_path}\n  out={file.name}\n\n"
+            await f.write(entry)
 
         for subfolder in folder.folders:
             await self._write_entries(f, subfolder, current_path)
