@@ -14,7 +14,7 @@ dependencies = [
     "frozenlist>=1.5.0",
     "idna>=3.13",
     "multidict>=6.2.0",
-    "propcache>=0.3.0",
+    "propcache>=0.5.2",
     "pydantic>=2.13.4",
     "typing-extensions>=4.12.2",
     "uvloop>=0.21.0; sys_platform != 'win32'",
