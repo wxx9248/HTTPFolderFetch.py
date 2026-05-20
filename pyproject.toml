@@ -18,5 +18,5 @@ dependencies = [
     "pydantic>=2.13.4",
     "typing-extensions>=4.12.2",
     "uvloop>=0.21.0; sys_platform != 'win32'",
-    "yarl>=1.18.3",
+    "yarl>=1.24.2",
 ]
