@@ -16,7 +16,7 @@ dependencies = [
     "multidict>=6.2.0",
     "propcache>=0.5.2",
     "pydantic>=2.13.4",
-    "typing-extensions>=4.12.2",
+    "typing-extensions>=4.16.0",
     "uvloop>=0.21.0; sys_platform != 'win32'",
     "yarl>=1.24.2",
 ]
